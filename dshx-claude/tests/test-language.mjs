@@ -49,6 +49,23 @@ assert.match(runHook('ok'), /none/)
 assert.equal(detectLanguage('好 ok').lang, 'zh-Hans')
 assert.equal(detectLanguage('ok 继续').lang, 'zh-Hans')
 assert.equal(detectLanguage('修一下 bug').mixedWith, 'en')
+// Any Chinese in the user's own words means Chinese, whatever the English around it.
+for (const p of [
+  'Claude code有 computer use能力吗',
+  'can you check the build and run the tests again 好吗',
+  'Please refactor the parser, 谢谢',
+  '好',
+]) {
+  assert.equal(detectLanguage(p).lang, 'zh-Hans', p)
+}
+assert.equal(detectLanguage('Claude code有 computer use能力吗').mixedWith, 'en')
+assert.match(runHook('Claude code有 computer use能力吗'), /Reply in Simplified Chinese/)
+// ...but not inside code, paths or pasted material, and an explicit ask still wins.
+assert.equal(detectLanguage('why does this log say:\n```\n错误：找不到文件\n```\nplease explain what went wrong').lang, 'en')
+assert.equal(detectLanguage('<pasted_content id="1">\n第一章 总结\n</pasted_content id="1">\nsummarise this chapter in English for me please').lang, 'en')
+assert.equal(detectLanguage('这个报错是什么意思，reply in English').lang, 'en')
+// Japanese also writes Han characters; kana keeps it Japanese.
+assert.equal(detectLanguage('このコードを確認してください').lang, 'ja')
 // Three or more words still switch.
 assert.equal(detectLanguage('fix the build').lang, 'en')
 assert.equal(detectLanguage('ok, go ahead').lang, 'en')

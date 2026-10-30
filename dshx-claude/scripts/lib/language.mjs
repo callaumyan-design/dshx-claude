@@ -187,12 +187,18 @@ export function detectLanguage(prompt) {
   // still count as the mixed-in terms.
   const primary = ranked.filter(([script]) => script !== 'latin' || latinWords.length >= MIN_LATIN_WORDS)
 
+  // Any Chinese in the user's own prose makes the reply Chinese, however many
+  // English words sit beside it: those are terms and product names (the
+  // user's rule). Kana means Japanese, which also writes Han characters.
+  const hasChinese = units.zh > 0
+  const lead = hasChinese ? 'zh' : primary[0]?.[0]
+
   let lang = null
   let mixedWith = null
-  if (primary.length > 0 && total >= 1) {
-    lang = resolve(primary[0][0])
+  if (lead && (hasChinese || total >= 1)) {
+    lang = resolve(lead)
     // A second script counts as "mixed in" once it is a noticeable share.
-    const second = ranked.find(([script]) => script !== primary[0][0])
+    const second = ranked.find(([script]) => script !== lead)
     if (second && second[1] / total >= 0.04 && second[1] >= 0.6) {
       mixedWith = resolve(second[0])
       if (mixedWith === lang) mixedWith = null
