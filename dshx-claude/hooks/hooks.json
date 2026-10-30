@@ -1,0 +1,17 @@
+{
+  "description": "dshx-claude: language mirror — inject the reply-language rule for every submitted prompt; usage pane and band (register.tsx)",
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/scripts/language-mirror.mjs\"",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  },
+  "modules": ["./register.tsx"]
+}

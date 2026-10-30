@@ -1,0 +1,13 @@
+{
+  "name": "dshx-local",
+  "owner": { "name": "Callaum" },
+  "description": "Local marketplace for dshx plugins ported to Claude Code",
+  "plugins": [
+    {
+      "name": "dshx-claude",
+      "source": "./dshx-claude",
+      "description": "Language mirror hook, /token-cost report, usage pane beside the chat and usage status line (ported from dshx-language-mirror, dshx-token-cost, dshx-usage-panel)",
+      "category": "productivity"
+    }
+  ]
+}
